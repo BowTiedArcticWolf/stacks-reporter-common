@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import java.util.List;
 import lombok.Data;
 
 @Data
@@ -49,7 +49,7 @@ public abstract class MempoolTx {
   String postConditionMode;
 
   @JsonProperty("post_conditions")
-  PostCondition[] postConditions;
+  List<PostCondition> postConditions;
 
   @JsonProperty("anchor_mode")
   String anchorMode;
