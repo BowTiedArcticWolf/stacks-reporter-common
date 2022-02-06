@@ -9,6 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -18,6 +19,9 @@ public class StacksApiClient {
 
   @NotNull
   final String apiNode;
+
+  @Setter
+  String jwt;
 
   private static final HttpClient client = HttpClient.newHttpClient();
 
@@ -42,9 +46,11 @@ public class StacksApiClient {
     log.debug("fetching from {}", uri);
     var request = HttpRequest.newBuilder()
         .version(Version.HTTP_1_1)
-        .uri(uri)
-        .build();
-    var response = client.send(request, BodyHandlers.ofInputStream());
+        .uri(uri);
+    if (jwt != null) {
+      request.header("Authorization", String.format("Bearer: %s", jwt));
+    }
+    var response = client.send(request.build(), BodyHandlers.ofInputStream());
     return mapper.readValue(response.body(), resultClass);
   }
 }
