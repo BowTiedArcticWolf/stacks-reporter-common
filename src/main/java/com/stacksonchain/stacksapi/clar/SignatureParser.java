@@ -27,6 +27,7 @@ public class SignatureParser {
       }
       name = terms.get(offset + 3);
       offset += 4;
+      /* parameters */
       while (offset < terms.size()) {
         if (terms.get(offset).equals(")")) {
           offset++;
@@ -35,9 +36,14 @@ public class SignatureParser {
         if (!(terms.get(offset).equals("(") && offset + 1 < terms.size())) {
           throw new IllegalStateException("expected parameter");
         }
-        var param = terms.get(offset + 1);
+        offset++;
+        var param = terms.get(offset);
         params.add(param);
-        offset += 4;
+        offset++;
+        /* type */
+        offset = processType(terms, offset);
+        /* ')' */
+        offset += 1;
       }
     }
     if (name == null) {
@@ -76,6 +82,26 @@ public class SignatureParser {
       }
     }
     return res;
+  }
+
+  int processType(List<String> terms, int offset) {
+    int stack = 0;
+    while (offset < terms.size()) {
+      if ("(".equals(terms.get(offset))) {
+        offset++;
+        stack++;
+      } else if (")".equals(terms.get(offset))) {
+        offset++;
+        stack--;
+      } else {
+        offset++;
+      }
+      if (stack == 0) {
+        return offset;
+      }
+
+    }
+    return terms.size();
   }
 
   static boolean termChar(char ch) {
