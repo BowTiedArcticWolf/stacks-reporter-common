@@ -7,6 +7,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpClient.Version;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
+import java.time.Duration;
 import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -22,6 +23,9 @@ public class StacksApiClient {
 
   @Setter
   String jwt;
+
+  @Setter
+  Duration timeout;
 
   private static final HttpClient client = HttpClient.newHttpClient();
 
@@ -49,6 +53,9 @@ public class StacksApiClient {
         .uri(uri);
     if (jwt != null) {
       request.header("Authorization", String.format("Bearer: %s", jwt));
+    }
+    if (timeout != null) {
+      request.timeout(timeout);
     }
     var response = client.send(request.build(), BodyHandlers.ofInputStream());
     return mapper.readValue(response.body(), resultClass);
