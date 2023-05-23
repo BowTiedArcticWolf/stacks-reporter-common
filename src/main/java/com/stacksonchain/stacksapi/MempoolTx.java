@@ -18,7 +18,9 @@ import lombok.Data;
 @JsonSubTypes({
     @Type(value = ContractCallTx.class, name = "contract_call"),
     @Type(value = TokenTransferTx.class, name = "token_transfer"),
-    @Type(value = SmartContractTx.class, name = "smart_contract")
+    @Type(value = SmartContractTx.class, name = "smart_contract"),
+    @Type(value = CoinbaseTx.class, name = "coinbase"),
+    @Type(value = PoisonTx.class, name = "poison_microblock")
 })
 public abstract class MempoolTx {
   @JsonProperty("tx_id")
